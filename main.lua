@@ -1,11 +1,11 @@
 local obsi = require("obsi2")
 
 local music = {
-    ["menu"] = obsi.audio.newSound("mus/dialtone.nbs")
+    ["menu"] = obsi.audio.newSound("mus/home.nbs")
 }
 local sprites = {
-    ["spamton-dance"] = obsi.graphics.newImagesFromTilesheet("spamdance.nfp", 32, 38),
-    ["logo"] = obsi.graphics.newImage("logo.nfp")
+    ["spamton-dance"] = obsi.graphics.newImagesFromTilesheet("sprites/spamdance.nfp", 32, 38),
+    ["logo"] = obsi.graphics.newImage("sprites/logo.nfp")
 }
 
 ---@type "menu"|"settings"|"game"|"cutscene"|"shop"|"battle"
