@@ -10,9 +10,11 @@ ass.currentPalette = "basement"
 
 ---@type game.Cutscene.Action[]
 local actions = {
+    {type = "move", actor = "camera", dx = 15, dy = 20, duration = 0, waitForCompletion = true},
+    -- {type = "wait", duration = 1, waitForCompletion = true},
     {type = "playMusic", musicName = "dialtone", loop = true},
-    {type = "addObject", objectName = "basement-room", x = 10, y = -8, defaultAnimation = "basement-room"} --[[@as game.Cutscene.AddObject]],
-    {type = "addObject", objectName = "spamton-vined", x = 10, y = -60, defaultAnimation = "spamton-vined"} --[[@as game.Cutscene.AddObject]],
+    {type = "addObject", objectName = "basement-room", x = 0, y = 0, defaultAnimation = "basement-room"} --[[@as game.Cutscene.AddObject]],
+    {type = "addObject", objectName = "spamton-vined", x = 0, y = -52, defaultAnimation = "spamton-vined"} --[[@as game.Cutscene.AddObject]],
     {type = "fadeIn", waitForCompletion = true},
     -- {type = "addObject", objectName = "ralsei", uniqueName = "ralsei"} --[[@as game.Cutscene.AddObject]],
     -- {type = "addObject", objectName = "kris", uniqueName = "kris"} --[[@as game.Cutscene.AddObject]],

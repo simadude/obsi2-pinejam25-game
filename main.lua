@@ -1,6 +1,8 @@
 local obsi = require("obsi2")
 local assetManager = require("assetManager")
 local driver = require("wtfdrive")
+assetManager.addSprite("camera", "sprites/camera.nfp")
+assetManager.addAnimation("camera", "camera", {{duration = 1, index = 1}})
 
 assetManager.addMusic("menu", "mus/home.nbs")
 

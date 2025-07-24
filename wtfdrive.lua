@@ -51,6 +51,12 @@ local assetManager = require("assetManager")
 ---@field type "function"
 ---@field func function
 
+---@class game.Cutscene.Wait
+---@field type "wait"
+---@field duration number
+---@field startTime? number
+---@field waitForCompletion boolean
+
 ---@alias game.Cutscene.Action
 ---| game.Cutscene.AddObject
 ---| game.Cutscene.PlayMusic
@@ -61,6 +67,7 @@ local assetManager = require("assetManager")
 ---| game.Cutscene.FadeOut
 ---| game.Cutscene.FadeIn
 ---| game.Cutscene.Function
+---| game.Cutscene.Wait
 
 ---@class game.Cutscene.Object
 ---@field name string
@@ -72,6 +79,7 @@ local assetManager = require("assetManager")
 ---@field currentFrame number
 ---@field lastTimeAnimation number
 ---@field startTimeMove number
+---@field order number
 
 local function lerp(a, b, t)
     return a + (b - a)*t
@@ -79,7 +87,20 @@ end
 
 local cutsceneDriver = {}
 ---@type game.Cutscene.Object[]
-local objects = {}
+local objects = {
+    {
+        name = "camera",
+        currentAnimation = "camera",
+        currentFrame = 1,
+        oldx = 0,
+        oldy = 0,
+        x = 0,
+        y = 0,
+        lastTimeAnimation = 0,
+        startTimeMove = 0,
+        order = 999999,
+    }
+}
 
 ---@type game.Cutscene.Action[]
 local currentActions = {}
@@ -101,7 +122,8 @@ function cutsceneDriver.createObject(objectName, x, y, defaultAnimation)
         currentAnimation = defaultAnimation,
         currentFrame = 1,
         lastTimeAnimation = obsi.timer.getTime(),
-        startTimeMove = 0
+        startTimeMove = 0,
+        order = #objects + 1
     }
 end
 
@@ -164,6 +186,14 @@ function cutsceneDriver.processActions(dt)
         elseif action.type == "function" then
             action.func()
             processed = true
+        elseif action.type == "wait" then
+            if not action.startTime then
+                action.startTime = obsi.timer.getTime()
+            end
+            local t = (obsi.timer.getTime()-action.startTime)
+            if t >= action.duration then
+                processed = true
+            end
         end
         if processed then
             if action.waitForCompletion then
@@ -180,14 +210,16 @@ end
 
 function cutsceneDriver.processAnimations()
     for _, obj in ipairs(objects) do
-        local anim = assetManager.animations[obj.currentAnimation]
-        if #anim.frames > 1 then
-            if anim.frames[obj.currentFrame].duration > obsi.timer.getTime()-obj.lastTimeAnimation then
-                obj.lastTimeAnimation = obsi.timer.getTime()
-                if anim.loop and obj.currentFrame == #anim.frames then
-                    obj.currentFrame = 1
-                elseif obj.currentFrame < #anim.frames then
-                    obj.currentFrame = obj.currentFrame + 1
+        if obj.currentAnimation ~= "" then
+            local anim = assetManager.animations[obj.currentAnimation]
+            if #anim.frames > 1 then
+                if anim.frames[obj.currentFrame].duration > obsi.timer.getTime()-obj.lastTimeAnimation then
+                    obj.lastTimeAnimation = obsi.timer.getTime()
+                    if anim.loop and obj.currentFrame == #anim.frames then
+                        obj.currentFrame = 1
+                    elseif obj.currentFrame < #anim.frames then
+                        obj.currentFrame = obj.currentFrame + 1
+                    end
                 end
             end
         end
@@ -195,9 +227,14 @@ function cutsceneDriver.processAnimations()
 end
 
 function cutsceneDriver.draw()
+    table.sort(objects, function(a, b) return a.order < b.order end)
+    local camera = objects[#objects]
+    obsi.graphics.setOrigin(camera.x-obsi.graphics.getPixelWidth()/2, camera.y-obsi.graphics.getPixelHeight()/2)
     for _, obj in ipairs(objects) do
-        local img = assetManager.getAnimationImage(obj.currentAnimation, obj.currentFrame)
-        obsi.graphics.draw(img, obj.x, obj.y)
+        if obj.currentAnimation ~= "" then
+            local img = assetManager.getAnimationImage(obj.currentAnimation, obj.currentFrame)
+            obsi.graphics.draw(img, obj.x, obj.y)
+        end
     end
 end
 
