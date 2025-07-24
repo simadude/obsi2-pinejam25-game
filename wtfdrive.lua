@@ -28,6 +28,9 @@ local assetManager = require("assetManager")
 ---@field musicName string
 ---@field loop boolean
 
+---@class game.Cutscene.stopMusic
+---@field type "stopMusic"
+
 ---@class game.Cutscene.AddObject
 ---@field type "addObject"
 ---@field objectName string
@@ -70,6 +73,7 @@ local assetManager = require("assetManager")
 ---| game.Cutscene.FadeIn
 ---| game.Cutscene.Function
 ---| game.Cutscene.Wait
+---| game.Cutscene.stopMusic
 
 ---@class game.Cutscene.Object
 ---@field name string
@@ -140,8 +144,18 @@ function cutsceneDriver.processActions(dt)
         if action.type == "addObject" then
             cutsceneDriver.createObject(action.objectName, action.x, action.y, action.defaultAnimation)
             processed = true
+        elseif action.type == "removeObject" then
+            for i, o in ipairs(objects) do
+                if o.name == action.objectName then
+                    table.remove(objects, i)
+                    break
+                end
+            end
         elseif action.type == "playMusic" then
             obsi.audio.play(assetManager.music[action.musicName], action.loop)
+            processed = true
+        elseif action.type == "stopMusic" then
+            obsi.audio.stop(1)
             processed = true
         elseif action.type == "move" then
             ---@type game.Cutscene.Object
@@ -168,6 +182,7 @@ function cutsceneDriver.processActions(dt)
                     obj.oldy = obj.oldy+action.dy
                     obj.x = obj.oldx
                     obj.y = obj.oldy
+                    obj.startTimeMove = 0
                     processed = true
                 end
             end
@@ -215,18 +230,22 @@ function cutsceneDriver.processActions(dt)
                 action.hasStopped = false
             end
             cutsceneDriver.continueDialog = false
-            if (obsi.timer.getTime()-action.lastTimeCharacter) >= 0.05 and not action.hasStopped then
-                action.lastTimeCharacter = obsi.timer.getTime()
-                action.currentPos = action.currentPos + 1
-                local curChar = action.text:sub(action.currentPos, action.currentPos)
-                local nextChar = action.text:sub(action.currentPos+1, action.currentPos+1)
-                if curChar == "\0" and action.currentPos < #action.text and nextChar < "\17" then
-                    action.currentPos = action.currentPos + 1
-                elseif curChar == "\0" then
-                    action.hasStopped = true
-                end
-                if action.currentPos > #action.text then
-                    processed = true
+            if (obsi.timer.getTime()-action.lastTimeCharacter) >= 0.02 then
+                for _ = 1, 2 do
+                    if not action.hasStopped then
+                        action.lastTimeCharacter = obsi.timer.getTime()
+                        action.currentPos = action.currentPos + 1
+                        local curChar = action.text:sub(action.currentPos, action.currentPos)
+                        local nextChar = action.text:sub(action.currentPos+1, action.currentPos+1)
+                        if curChar == "\0" and action.currentPos < #action.text and nextChar < "\17" then
+                            action.currentPos = action.currentPos + 1
+                        elseif curChar == "\0" then
+                            action.hasStopped = true
+                        end
+                        if action.currentPos > #action.text then
+                            processed = true
+                        end
+                    end
                 end
             end
         elseif action.type == "startAnimation" then
@@ -300,7 +319,19 @@ function cutsceneDriver.draw()
         if action.type == "dialog" then
             local h = obsi.graphics.getHeight()-4
             do
+                obsi.graphics.write("\151", 4, h)
                 obsi.graphics.write(("\131"):rep(41), 5, h)
+                obsi.graphics.write("\148", 46, h, "f", "0")
+                obsi.graphics.write("\149", 4, h+1)
+                obsi.graphics.write(("\128"):rep(41), 5, h+1)
+                obsi.graphics.write("\149", 46, h+1, "f", "0")
+                obsi.graphics.write("\149", 4, h+2)
+                obsi.graphics.write(("\128"):rep(41), 5, h+2)
+                obsi.graphics.write("\149", 46, h+2, "f", "0")
+                obsi.graphics.write("\149", 4, h+3)
+                obsi.graphics.write(("\128"):rep(41), 5, h+3)
+                obsi.graphics.write("\149", 46, h+3, "f", "0")
+                obsi.graphics.write(("\143"):rep(41), 5, h+4, "f", "0")
             end
             local str = ""
             local fgstr = ""
