@@ -92,7 +92,7 @@ end
 
 function obsi.onKeyPress(k)
     if gameState == "menu" then
-        if k == keys.enter then
+        if k == keys.enter or k == keys.z then
             if menuOptions.selected == 1 then
                 driver.setQueue({
                     {type = "fadeOut", waitForCompletion = true} --[[@as game.Cutscene.FadeOut]],
@@ -133,6 +133,10 @@ function obsi.onKeyPress(k)
             if setting.type == "function" then
                 setting.value()
             end
+        end
+    elseif gameState == "cutscene" then
+        if k == keys.z or k == keys.enter then
+            driver.continueDialog = true
         end
     end
 end

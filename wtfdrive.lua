@@ -6,12 +6,14 @@ local assetManager = require("assetManager")
 ---@field speaker string Doesn't have to be an object.
 ---@field text string
 ---@field waitForCompletion? boolean
+---@field currentPos? number
+---@field hasStopped? boolean
+---@field lastTimeCharacter? number
 
 ---@class game.Cutscene.StartAnimation
 ---@field type "startAnimation"
 ---@field actor string
 ---@field animationName string
----@field waitForCompletion? boolean
 
 ---@class game.Cutscene.Move
 ---@field type "move"
@@ -102,11 +104,14 @@ local objects = {
     }
 }
 
----@type game.Cutscene.Action[]
-local currentActions = {}
+-- set this shit to true yourself when pressing key
+cutsceneDriver.continueDialog = false
 
 ---@type game.Cutscene.Action[]
-local actionQueue = {}
+cutsceneDriver.currentActions = {}
+
+---@type game.Cutscene.Action[]
+cutsceneDriver.actionQueue = {}
 
 ---@param objectName string
 ---@param x number
@@ -129,8 +134,8 @@ end
 
 function cutsceneDriver.processActions(dt)
     local i = 1
-    while i <= #currentActions do
-        local action = currentActions[i]
+    while i <= #cutsceneDriver.currentActions do
+        local action = cutsceneDriver.currentActions[i]
         local processed = false
         if action.type == "addObject" then
             cutsceneDriver.createObject(action.objectName, action.x, action.y, action.defaultAnimation)
@@ -147,17 +152,24 @@ function cutsceneDriver.processActions(dt)
                     break
                 end
             end
-            local t = (obsi.timer.getTime()-obj.startTimeMove)/action.duration
-            local x = lerp(obj.oldx, obj.oldx+action.dx, t)
-            local y = lerp(obj.oldy, obj.oldy+action.dy, t)
-            obj.x = x
-            obj.y = y
-            if t >= 1 then
-                obj.oldx = obj.oldx+action.dx
-                obj.oldy = obj.oldy+action.dy
-                obj.x = obj.oldx+action.dx
-                obj.y = obj.oldy+action.dy
+            if not obj then
                 processed = true
+            elseif obj.startTimeMove == 0 then
+                obj.startTimeMove = obsi.timer.getTime()
+            end
+            if obj then
+                local t = (obsi.timer.getTime()-obj.startTimeMove)/action.duration
+                local x = lerp(obj.oldx, obj.oldx+action.dx, t)
+                local y = lerp(obj.oldy, obj.oldy+action.dy, t)
+                obj.x = x
+                obj.y = y
+                if t >= 1 then
+                    obj.oldx = obj.oldx+action.dx
+                    obj.oldy = obj.oldy+action.dy
+                    obj.x = obj.oldx
+                    obj.y = obj.oldy
+                    processed = true
+                end
             end
         elseif action.type == "fadeOut" then
             local pal = assetManager.palettes[assetManager.currentPalette].data
@@ -194,14 +206,62 @@ function cutsceneDriver.processActions(dt)
             if t >= action.duration then
                 processed = true
             end
+        elseif action.type == "dialog" then
+            if not action.currentPos then
+                action.currentPos = 0
+                action.lastTimeCharacter = 0
+            end
+            if action.hasStopped and cutsceneDriver.continueDialog then
+                action.hasStopped = false
+            end
+            cutsceneDriver.continueDialog = false
+            if (obsi.timer.getTime()-action.lastTimeCharacter) >= 0.05 and not action.hasStopped then
+                action.lastTimeCharacter = obsi.timer.getTime()
+                action.currentPos = action.currentPos + 1
+                local curChar = action.text:sub(action.currentPos, action.currentPos)
+                local nextChar = action.text:sub(action.currentPos+1, action.currentPos+1)
+                if curChar == "\0" and action.currentPos < #action.text and nextChar < "\17" then
+                    action.currentPos = action.currentPos + 1
+                elseif curChar == "\0" then
+                    action.hasStopped = true
+                end
+                if action.currentPos > #action.text then
+                    processed = true
+                end
+            end
+        elseif action.type == "startAnimation" then
+            ---@type game.Cutscene.Object
+            local obj
+            for _, o in ipairs(objects) do
+                if o.name == action.actor then
+                    obj = o
+                    break
+                end
+            end
+            if not obj then
+                processed = true
+            end
+            obj.currentAnimation = action.animationName
+            obj.currentFrame = 1
+            obj.lastTimeAnimation = obsi.timer.getTime()
+            processed = true
         end
         if processed then
             if action.waitForCompletion then
-                while #actionQueue > 0 do
-                    currentActions[#currentActions+1] = table.remove(actionQueue, 1)
+                -- idk why this works, ask deepseek
+                local added = 0
+                while #cutsceneDriver.actionQueue > 0 do
+                    local nextAction = table.remove(cutsceneDriver.actionQueue, 1)
+                    cutsceneDriver.currentActions[#cutsceneDriver.currentActions+1] = nextAction
+                    added = added + 1
+                    if nextAction.waitForCompletion then
+                        break
+                    end
                 end
             end
-            table.remove(currentActions, i)
+            if cutsceneDriver.currentActions[i] == action then -- THIS IS VERY WEIRD BEHAVIOUR WHEN THIS ISN'T TRUE.
+                table.remove(cutsceneDriver.currentActions, i) -- SOMETHING HAS TO DO WITH RESETTING QUEUE WITHIN AN ACTION.
+            end
         else
             i = i + 1
         end
@@ -213,7 +273,7 @@ function cutsceneDriver.processAnimations()
         if obj.currentAnimation ~= "" then
             local anim = assetManager.animations[obj.currentAnimation]
             if #anim.frames > 1 then
-                if anim.frames[obj.currentFrame].duration > obsi.timer.getTime()-obj.lastTimeAnimation then
+                if obsi.timer.getTime()-obj.lastTimeAnimation > anim.frames[obj.currentFrame].duration then
                     obj.lastTimeAnimation = obsi.timer.getTime()
                     if anim.loop and obj.currentFrame == #anim.frames then
                         obj.currentFrame = 1
@@ -236,16 +296,53 @@ function cutsceneDriver.draw()
             obsi.graphics.draw(img, obj.x, obj.y)
         end
     end
+    for _, action in ipairs(cutsceneDriver.currentActions) do
+        if action.type == "dialog" then
+            local h = obsi.graphics.getHeight()-4
+            do
+                obsi.graphics.write(("\131"):rep(41), 5, h)
+            end
+            local str = ""
+            local fgstr = ""
+            local bgstr = ""
+            local curFGColor = "0"
+            local curBGColor = "F"
+            local i = 1
+            local iy = 1
+            while i <= action.currentPos and i <= #action.text do
+                local char = action.text:sub(i, i)
+                if char == "\0" and i < #action.text and action.text:sub(i+1, i+1) < "\17" then
+                    i = i + 1
+                    curFGColor = colors.toBlit(2^(action.text:byte(i, i)))
+                elseif char > "\17" and char ~= "\n" then
+                    str = str..char
+                    fgstr = fgstr .. curFGColor
+                    bgstr = bgstr .. curBGColor
+                end
+                i = i + 1
+                if char == "\n" then
+                    obsi.graphics.write(str, 5, h+iy, fgstr, bgstr)
+                    str = ""
+                    fgstr = ""
+                    bgstr = ""
+                    iy = iy + 1
+                end
+                if i >= action.currentPos or i >= #action.text then
+                    obsi.graphics.write(str, 5, h+iy, fgstr, bgstr)
+                end
+            end
+        end
+    end
 end
 
 ---@param actions game.Cutscene.Action[]
 function cutsceneDriver.setQueue(actions)
-    for i, action in ipairs(actions) do
-        currentActions[#currentActions+1] = action
+    cutsceneDriver.currentActions = {}
+    cutsceneDriver.actionQueue = actions
+    while #cutsceneDriver.actionQueue ~= 0 do
+        local action = table.remove(cutsceneDriver.actionQueue, 1) --[[@as game.Cutscene.Action]]
+        cutsceneDriver.currentActions[#cutsceneDriver.currentActions+1] = action
         if action.waitForCompletion then
-            for j = i+1, #actions do
-                actionQueue[#actionQueue+1] = actions[j]
-            end
             break
         end
     end
