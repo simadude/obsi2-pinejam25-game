@@ -1,0 +1,84 @@
+                   C                                        
+                   C                                        
+ C                 C                                        
+ C                CC                   C                    
+ C                C                    C                    
+CC                C                    C                    
+C                 C          C         C                    
+ C                C         C          C                    
+ CC               C         C          C                    
+  C               C        CC          C                    
+  C               C        C           C                  CC
+  C              C         C           C                CCC 
+  C              C         C           C              CC    
+  C              C         C           C            CC      
+  C              C         C           C           CC       
+  C              C         C           C         CCC        
+  C              C          C          C        C           
+  CC            C           C          C        C           
+   C            C           CC         C      CC            
+   CC           C            CC        C      C             
+    C           C             C        C     CC             
+    C           C             CC       C     C              
+    C           C              C        C    C              
+    C           C              C        C    CC             
+   C            C              CC       C     CC            
+    C           C               C       C      A            
+    C           C               A       AA      AA          
+    C           A               A        AA      AA         
+    AA          A               A          A       AA       
+     A         A                 A          AAA     AA      
+     A         A                 A             AA    AA     
+     A        AA                 A               A     A    
+      A      AA                  A                AA    A   
+      A      A                   A                  A   AA  
+      A     A                    A                   AA  A  
+       A  AA                    AA                    AAAA  
+       A  A                A    A                        A  
+       AAA                 AA   A                        A  
+        AA                  AA AA                        A  
+       AAA                  AAA                         A   
+      AAA A               AAAA                         AA   
+     AAA  A               A                            D    
+     AAA  AA             A                            D     
+     AA    A            A                             D     
+           A            D                            DD     
+            A           D                            D      
+             D          D                           DD      
+              D         D                           D       
+              D         D                          DD       
+               D        D                        DDD        
+               D        D                       DD          
+               D        D                      DD           
+               DD       DD                    DD            
+                 D      DD                 DDD              
+                 D       D                 DD               
+                 D       D                 D                
+                 D       D                 D                
+                 D       D                 D                
+                 D       DD    77         DD                
+                 D        D   7FF7        D                 
+                 D        DD77FF7         D                 
+                 DD      7FDDFFF7         D                 
+                  D     7FFFDDFF77FF7    DD                 
+                   D   7FFFFDDFFFFF7    5DD                 
+                   5   7F7777D5FFF7      D                  
+                   5   F7777775DFF7     D                   
+                   D   F7FF77FF5DF77    5                   
+                   D    F447722F55DF7  DD                   
+                   D5   F447022FFFDD   D                    
+                    55DF0F700FF0FFFD  D5                    
+                      5F0E7070E0F77  D5                     
+                      DF07007000F    D                      
+                        F707000F   D5                       
+                        F707FF77  D5                        
+                      FDFF7FFFFFFD5                         
+                     FF555DFFFFFD5                          
+                    7FF DDFDDDFDDF7                         
+                   707DDFDFFFDDD 707                        
+                    7  DFFDDFFF   7                         
+                        FFFDDDD                             
+                        7007007                             
+                         70707                              
+                         70707                              
+                          777                               

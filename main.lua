@@ -1,14 +1,13 @@
 local obsi = require("obsi2")
+local assetManager = require("assetManager")
+local driver = require("wtfdrive")
 
-local music = {
-    ["menu"] = obsi.audio.newSound("mus/home.nbs")
-}
-local sprites = {
-    ["spamton-dance"] = obsi.graphics.newImagesFromTilesheet("sprites/spamdance.nfp", 32, 38),
-    ["logo"] = obsi.graphics.newImage("sprites/logo.nfp")
-}
+assetManager.addMusic("menu", "mus/home.nbs")
 
----@type "menu"|"settings"|"game"|"cutscene"|"shop"|"battle"
+assetManager.addSprites("spamton-dance", "sprites/spamdance.nfp", 32, 38)
+assetManager.addSprite("logo", "sprites/logo.nfp")
+
+---@type "menu"|"settings"|"game"|"cutscene"|"shop"
 local gameState = "menu"
 
 local menuOptions = {
@@ -21,12 +20,11 @@ local menuOptions = {
 local settingsOptions = {
     {name = "Music Volume", type = "number", step = 5, min = 0, value = 100, max = 150},
     {name = "SFX Volume", type = "number", step = 5, min = 0, value = 100, max = 150},
-    {name = "vro I forgor", type = "choice", value = 1, choices = {"what", "who"}},
     {},
     {name = "EXIT", type = "function", value = function() gameState = "menu" end},
     selected = 1
 }
-settingsOptions[4] = {name = "APPLY", type = "function", value = function()
+settingsOptions[3] = {name = "APPLY", type = "function", value = function()
     obsi.audio.setVolume(1, settingsOptions[1].value/100)
     obsi.audio.setVolume(2, settingsOptions[2].value/100)
     settings.set("obsi-spamton-music", settingsOptions[1].value/100)
@@ -34,11 +32,9 @@ settingsOptions[4] = {name = "APPLY", type = "function", value = function()
 end}
 
 function obsi.load()
-    obsi.audio.play(music["menu"], true)
+    obsi.audio.play(assetManager.music["menu"], true)
     settingsOptions[1].value = settings.get("obsi-spamton-music", 1.0)*100
     settingsOptions[2].value = settings.get("obsi-spamton-sfx", 1.0)*100
-    obsi.audio.setVolume(1, settings.get("obsi-spamton-music", 1.0))
-    obsi.audio.setVolume(2, settings.get("obsi-spamton-sfx", 1.0))
 end
 
 function obsi.draw()
@@ -50,9 +46,10 @@ function obsi.draw()
         obsi.graphics.setRenderer("pixelbox")
     end
     if gameState == "menu" or gameState == "settings" then
-        local spm = sprites["spamton-dance"]
+        local spm = assetManager.sprites["spamton-dance"]
         obsi.graphics.draw(spm[math.floor((obsi.timer.getTime()*9) % #spm) + 1], pw*0.7+1, ph/2-spm[1].height/2+1)
-        obsi.graphics.draw(sprites["logo"], 3, 3)
+        obsi.graphics.draw(assetManager.sprites["logo"][1], 3, 3)
+        obsi.graphics.write("Submission for PineJam 2025, by Simadude", 1, h-1)
     end
     
     local ty = h*0.5
@@ -79,19 +76,26 @@ function obsi.draw()
                 obsi.graphics.write(v.name, tx-5, ty+i*2-3, settingsOptions.selected == i and colors.yellow or colors.white)
             end
         end
+    elseif gameState == "cutscene" then
+        driver.draw()
     end
-    obsi.graphics.write("Submission for PineJam 2025, by Simadude", 1, h-1)
 end
 
 function obsi.update(dt)
-    
+    driver.processActions(dt)
+    driver.processAnimations()
+    obsi.audio.setVolume(1, settings.get("obsi-spamton-music", 1.0))
+    obsi.audio.setVolume(2, settings.get("obsi-spamton-sfx", 1.0))
 end
 
 function obsi.onKeyPress(k)
     if gameState == "menu" then
         if k == keys.enter then
             if menuOptions.selected == 1 then
-                obsi.quit()
+                driver.setQueue({
+                    {type = "fadeOut", waitForCompletion = true} --[[@as game.Cutscene.FadeOut]],
+                    {type = "function", func = function() gameState = "cutscene"; obsi.audio.stop(1); driver.setQueue(require("scene1")); end}
+                })
             elseif menuOptions.selected == 2 then
                 gameState = "settings"
                 -- obsi.quit()
