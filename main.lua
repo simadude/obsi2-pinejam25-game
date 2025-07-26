@@ -1,13 +1,6 @@
 local obsi = require("obsi2")
 local assetManager = require("assetManager")
 local driver = require("wtfdrive")
-assetManager.addSprite("camera", "sprites/camera.nfp")
-assetManager.addAnimation("camera", "camera", {{duration = 1, index = 1}})
-
-assetManager.addMusic("menu", "mus/home.nbs")
-
-assetManager.addSprites("spamton-dance", "sprites/spamdance.nfp", 32, 38)
-assetManager.addSprite("logo", "sprites/logo.nfp")
 
 ---@type "menu"|"settings"|"game"|"cutscene"|"shop"
 local gameState = "menu"
@@ -34,6 +27,13 @@ settingsOptions[3] = {name = "APPLY", type = "function", value = function()
 end}
 
 function obsi.load()
+    assetManager.addSprite("camera", "sprites/camera.nfp")
+    assetManager.addAnimation("camera", "camera", {{duration = 1, index = 1}})
+
+    assetManager.addMusic("menu", "mus/home.nbs")
+
+    assetManager.addSprites("spamton-dance", "sprites/spamdance.nfp", 32, 38)
+    assetManager.addSprite("logo", "sprites/logo.nfp")
     obsi.audio.play(assetManager.music["menu"], true)
     settingsOptions[1].value = settings.get("obsi-spamton-music", 1.0)*100
     settingsOptions[2].value = settings.get("obsi-spamton-sfx", 1.0)*100
