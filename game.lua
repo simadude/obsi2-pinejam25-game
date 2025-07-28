@@ -3,6 +3,7 @@ local game = {}
 
 local image_soul = obsi.graphics.newImage("sprites/blue-soul.nfp")
 local image_platform = obsi.graphics.newImage("sprites/platform.nfp")
+local image_door = obsi.graphics.newImage("sprites/door.nfp")
 local player = {x = 30, y = 40, width = image_soul.width, height = image_soul.height, speedY = 0, landed = false}
 local center = {x = 0, y = 0}
 
@@ -24,7 +25,7 @@ local function initPlatforms()
     for i = 1, 10 do
         local platx = math.random(platformMinX, platformMaxX)
         local platy = floor_platforms[i-1] and floor_platforms[i-1].y - platformRangeY + math.random(-platformMarginY, platformMarginY) or 30
-        floor_platforms[i] = {x = platx, y = platy, width = image_platform.width, height = image_platform.height}
+        floor_platforms[i] = {x = platx, y = platy, width = image_platform.width, height = image_platform.height, type = 1}
     end
 end
 
@@ -53,14 +54,18 @@ local function spawnPlatforms()
                 end
             end
             local platy = floor_platforms[#floor_platforms].y - platformRangeY + math.random(-platformMarginY, platformMarginY)
-            floor_platforms[#floor_platforms+1] = {x = platx, y = platy, width = image_platform.width, height = image_platform.height}
-            if math.random(1, 10) == 5 then
+            local r = math.random(1, 20)
+            if r <= 10 then
+                floor_platforms[#floor_platforms+1] = {x = platx, y = platy, width = image_platform.width, height = image_platform.height, type = 1}
+            elseif r <= 15 then
                 for j = 1, 3 do
                     platx = math.random(platformMinX, platformMaxX)
                     local platformRangeY = 10
                     platy = floor_platforms[#floor_platforms].y - platformRangeY + math.random(-platformMarginY, platformMarginY)
-                    floor_platforms[#floor_platforms+1] = {x = platx, y = platy, width = image_platform.width, height = image_platform.height}
+                    floor_platforms[#floor_platforms+1] = {x = platx, y = platy, width = image_platform.width, height = image_platform.height, type = 1}
                 end
+            elseif r < 20 then
+                floor_platforms[#floor_platforms+1] = {x = platx, y = platy, width = image_platform.width, height = image_platform.height, type = 2}
             end
         end
     end
@@ -139,7 +144,12 @@ function obsi.draw()
     obsi.graphics.rectangle("fill", floor.x, floor.y, floor.width, floor.height)
     obsi.graphics.setForegroundColor("0")
     for _, platform in ipairs(floor_platforms) do
-        obsi.graphics.draw(image_platform, platform.x, platform.y)
+        if platform.type == 1 then
+            obsi.graphics.draw(image_platform, platform.x, platform.y)
+        elseif platform.type == 2 then
+            obsi.graphics.draw(image_platform, platform.x, platform.y)
+            obsi.graphics.draw(image_door, platform.x, platform.y-image_door.height)
+        end
     end
     obsi.graphics.draw(image_soul, player.x, player.y)
     -- obsi.graphics.write(("%s"):format(#floor_platforms), 1, 1)
