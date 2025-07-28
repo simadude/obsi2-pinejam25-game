@@ -28,6 +28,10 @@ local assetManager = require("assetManager")
 ---@field musicName string
 ---@field loop boolean
 
+---@class game.Cutscene.setBackgroundColor
+---@field type "setBackgroundColor"
+---@field color ccTweaked.colors.color
+
 ---@class game.Cutscene.stopMusic
 ---@field type "stopMusic"
 
@@ -74,6 +78,7 @@ local assetManager = require("assetManager")
 ---| game.Cutscene.Function
 ---| game.Cutscene.Wait
 ---| game.Cutscene.stopMusic
+---| game.Cutscene.setBackgroundColor
 
 ---@class game.Cutscene.Object
 ---@field name string
@@ -116,6 +121,8 @@ cutsceneDriver.currentActions = {}
 
 ---@type game.Cutscene.Action[]
 cutsceneDriver.actionQueue = {}
+
+cutsceneDriver.backgroundColor = colors.black
 
 ---@param objectName string
 ---@param x number
@@ -210,6 +217,8 @@ function cutsceneDriver.processActions(dt)
             if t >= 1 then
                 processed = true
             end
+        elseif action.type == "setBackgroundColor" then
+            cutsceneDriver.backgroundColor = action.color
         elseif action.type == "function" then
             action.func()
             processed = true
@@ -306,6 +315,7 @@ function cutsceneDriver.processAnimations()
 end
 
 function cutsceneDriver.draw()
+    obsi.graphics.setBackgroundColor(cutsceneDriver.backgroundColor)
     table.sort(objects, function(a, b) return a.order < b.order end)
     local camera = objects[#objects]
     obsi.graphics.setOrigin(camera.x-obsi.graphics.getPixelWidth()/2, camera.y-obsi.graphics.getPixelHeight()/2)
@@ -320,16 +330,16 @@ function cutsceneDriver.draw()
             local h = obsi.graphics.getHeight()-4
             do
                 obsi.graphics.write("\151", 4, h)
-                obsi.graphics.write(("\131"):rep(41), 5, h)
+                obsi.graphics.write(("\131"):rep(41), 5, h, "0", "f")
                 obsi.graphics.write("\148", 46, h, "f", "0")
-                obsi.graphics.write("\149", 4, h+1)
-                obsi.graphics.write(("\128"):rep(41), 5, h+1)
+                obsi.graphics.write("\149", 4, h+1, "0", "f")
+                obsi.graphics.write(("\128"):rep(41), 5, h+1, "0", "f")
                 obsi.graphics.write("\149", 46, h+1, "f", "0")
-                obsi.graphics.write("\149", 4, h+2)
-                obsi.graphics.write(("\128"):rep(41), 5, h+2)
+                obsi.graphics.write("\149", 4, h+2, "0", "f")
+                obsi.graphics.write(("\128"):rep(41), 5, h+2, "0", "f")
                 obsi.graphics.write("\149", 46, h+2, "f", "0")
-                obsi.graphics.write("\149", 4, h+3)
-                obsi.graphics.write(("\128"):rep(41), 5, h+3)
+                obsi.graphics.write("\149", 4, h+3, "0", "f")
+                obsi.graphics.write(("\128"):rep(41), 5, h+3, "0", "f")
                 obsi.graphics.write("\149", 46, h+3, "f", "0")
                 obsi.graphics.write(("\143"):rep(41), 5, h+4, "f", "0")
             end
