@@ -144,10 +144,13 @@ local actions = {
     {type = "startAnimation", actor = "spamton", animationName = "spamton-right", waitForCompletion = false},
     {type = "wait", duration = 0.5, waitForCompletion = true},
     {type = "move", actor = "spamton", dx = 100, dy = 0, duration = 1.5, waitForCompletion = true},
-    {type = "wait", duration = 1.5, waitForCompletion = true},
+    {type = "wait", duration = 0.75, waitForCompletion = true},
     {type = "fadeOut", waitForCompletion = true},
+    {type = "move", actor = "camera", dx = -30, dy = -40, duration = 0.001, waitForCompletion = false},
     {type = "wait", duration = 0.5, waitForCompletion = true},
     {type = "stopMusic"},
+    {type = "removeObject", objectName = "basement-room"},
+    {type = "removeObject", objectName = "spamton"},
     {type = "function", func = function() wtfdrive.setQueue(require("scene2")) end}
 }
 
