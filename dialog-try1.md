@@ -1,4 +1,3 @@
-
 ## START
 
 -- After defeating Spamton Neo. Queen's basement --
@@ -39,6 +38,8 @@ Spamton: BUT I'LL NEED SOME [[Customer Support]].
 
 (Fade to black with setting palette colors)
 
+## SHAWN
+
 (Fade back in to Shawn in his shop in the Castle Town.)
 
 (Spamton glides into the shop.)
@@ -74,3 +75,37 @@ Seam: You'll need a way to get around in that mess. Here.
 Seam: Found this thing rolling around in the back. It's not for sale. Too... persistent. It has a habit of wanting to go up. Perhaps you two can be miserable together.
 
 Spamton: A [[Free Gift With Purchase]]!? SEAM, YOU DRIVE A HARD BARGAIN! WITH THIS [[Heart-Shaped Object]], I'LL REACH THE TOP! I'LL BUILD MY RIDE! I'LL BECOME SO [[Fast & Furious]] EVEN MY OWN [[Strings]] WON'T CATCH ME!
+
+## END
+
+(Cyber World. Spamton stands in front of a ready to go purple truck. Soul glides in from behind.)
+
+Spamton: AH! MY [[Trusted Business Partner]]! JUST IN TIME FOR THE [[Grand Opening]]!
+
+Spamton: LOOK AT THIS [[Beauty On Wheels]]! THOSE FRAMES FROM THE [[Trash Zone]], THE [[Premium Quality]] WHEELS...
+
+Spamton: AND THE [[Heart]] OF THE OPERATION! THAT [[Image_Friend]]'S FACE WHEN WE [[Borrowed]] THEIR ENGINE! HEHEHE!
+
+(Soul bobs up and down excitedly)
+
+Spamton: WHAT'S THAT? YOU WANT TO [[Carpool]] WITH THE BIGGEST [[Shot]] IN TOWN?
+
+(Soul nods vigorously)
+
+Spamton: THEN HOP IN, [[Little Buddy]]! WE'VE GOT A [[One Way Trip]] TO [[Freedom]]!
+
+(Soul jumps into the back of the truck. Spamton climbs into the driver's seat.)
+
+Spamton: NO MORE [[Strings]] HOLDING US DOWN! NO MORE [[Admin Privileges]] CONTROLLING OUR LIVES!
+
+(The truck's engine roars to life, multicolored smoke puffing from the exhaust)
+
+Spamton: HERE WE GO! [[3]]... [[2]]... [[1]]...
+
+(The truck peels out, leaving digital tire marks)
+
+Spamton: NEXT STOP: [[ANYWHERE BUT HERE]]!!!
+
+(The truck speeds off into the digital sunset, leaving a trail of glitching pixels)
+
+-- THE END --
