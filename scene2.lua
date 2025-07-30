@@ -89,8 +89,9 @@ local actions = {
     {type = "dialog", speaker = "spamton", text = "SEE YA, PAL!\0", waitForCompletion = true},
     {type = "move", actor = "spamton", dx = -128, dy = 0, duration = 1, waitForCompletion = true} --[[@as game.Cutscene.Move]],
     {type = "fadeOut", waitForCompletion = true},
+    {type = "move", actor = "camera", dx = -52, dy = -32, duration = 0.001, waitForCompletion = false},
     {type = "stopMusic"},
-    {type = "function", func = function() wtfdrive.setQueue(require("scene3")) end}
+    {type = "function", func = function() require("game") end}
 }
 
 return actions
