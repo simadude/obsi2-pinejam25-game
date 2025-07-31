@@ -35,6 +35,7 @@ function obsi.load()
     assetManager.addSprites("spamton-dance", "sprites/spamdance.nfp", 32, 38)
     assetManager.addSprite("logo", "sprites/logo.nfp")
     obsi.audio.play(assetManager.music["menu"], true)
+    settings.load()
     settingsOptions[1].value = settings.get("obsi-spamton-music", 1.0)*100
     settingsOptions[2].value = settings.get("obsi-spamton-sfx", 1.0)*100
 end
@@ -139,6 +140,10 @@ function obsi.onKeyPress(k)
             driver.continueDialog = true
         end
     end
+end
+
+function obsi.onQuit()
+    settings.save()
 end
 
 obsi.init()
