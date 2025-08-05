@@ -4,9 +4,6 @@ local wtfdrive = require("wtfdrive")
 ass.addSprite("seam-room", "sprites/seam-room.nfp")
 ass.addAnimation("seam-room", "seam-room", {{duration = 1, index = 1}})
 
-ass.addSprite("soul", "sprites/blue-soul.nfp")
-ass.addAnimation("soul", "soul", {{duration = 1, index = 1}})
-
 ass.addSprites("seam", "sprites/seam.nfp", 37, 33)
 ass.addAnimation("seam", "seam", {{duration = 0.5, index = 1}, {duration = 0.25, index = 2}, {duration = 0.25, index = 3}, {duration = 0.25, index = 4}}, true)
 ass.addAnimation("seam-serious", "seam", {{duration = 0.5, index = 5}, {duration = 0.25, index = 6}, {duration = 0.25, index = 7}, {duration = 0.25, index = 8}}, true)
@@ -21,7 +18,7 @@ ass.addAnimation("spamton-right-arms-up-open", "spamton-1", {{duration = 1, inde
 ass.addAnimation("spamton-block", "spamton-1", {{duration = 1, index = 5}})
 ass.addAnimation("spamton-soul", "spamton-1", {{duration = 1, index = 12}})
 
-ass.addSprites("soul", "sprites/blue-soul.nfp", 5, 4)
+ass.addSprites("soul", "sprites/blue-soul.nfp", 6, 5)
 ass.addAnimation("soul", "soul", {{duration = 1, index = 1}}, true)
 
 ass.addMusic("lantern", "mus/lanterning.nbs")
