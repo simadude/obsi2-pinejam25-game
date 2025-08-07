@@ -343,6 +343,7 @@ function game.load()
             carPartsCount = carPartsCount + 1
         end
         if hasWon and obsi.timer.getTime()-winTime > 6 then
+            obsi.audio.stop(1)
             require("end")()
         end
     end
