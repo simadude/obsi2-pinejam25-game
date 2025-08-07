@@ -209,7 +209,8 @@ local function eventLoop()
 		elseif eventData[1] == "terminate" or quit then
 			obsi.onQuit()
 			obsi.graphics.clearPalette()
-			obsi.audio.stopAll()
+			-- obsi.audio.stopAll()
+			-- ^ WHY DOES THIS CRASH CRAFTOS-PC ON MY WINDOWS 10??
 			term.setBackgroundColor(colors.black)
 			term.clear()
 			term.setCursorPos(1, 1)
