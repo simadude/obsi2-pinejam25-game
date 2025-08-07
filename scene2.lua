@@ -42,7 +42,7 @@ local actions = {
     {type = "dialog",  speaker = "spamton", text = "OLD FRIEND,\0 OLD PAL,\n\0OLD [[End User License agreement]]!\0", waitForCompletion = true} --[[@as game.Cutscene.Dialog]],
     {type = "dialog",  speaker = "spamton", text = "I'VE COME TO MAKE A [[Deal of a\nLifetime]]!\0", waitForCompletion = true} --[[@as game.Cutscene.Dialog]],
     {type = "dialog",  speaker = "seam", text = "...Spamton. I thought you'd be...\n\0well, recycled by now.\0", waitForCompletion = true} --[[@as game.Cutscene.Dialog]],
-    {type = "dialog",  speaker = "seam", text = "What is it you're seeling this time?\0", waitForCompletion = true} --[[@as game.Cutscene.Dialog]],
+    {type = "dialog",  speaker = "seam", text = "What is it you're selling this time?\0", waitForCompletion = true} --[[@as game.Cutscene.Dialog]],
     {type = "startAnimation", actor = "seam", animationName = "seam", waitForCompletion = true},
     {type = "dialog",  speaker = "seam", text = "Broken dreams?\0 Empty promises?\0", waitForCompletion = true} --[[@as game.Cutscene.Dialog]],
     {type = "dialog",  speaker = "spamton", text = "BETTER!\0 I'M IN THE MARKET FOR\n[[LUXURY]]! FOR [[Horsepower]]!\0", waitForCompletion = true} --[[@as game.Cutscene.Dialog]],
