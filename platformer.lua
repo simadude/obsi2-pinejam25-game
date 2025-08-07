@@ -130,11 +130,14 @@ function game.reset()
     gameOver = false
     score = 0
     health = 3
+    damageTime = 0
 end
 
 function game.load()
     playedWinMusic = false
-    obsi.graphics.clearPalette()
+    for i = 1, 16 do
+        obsi.graphics.setPaletteColor(2^(i-1), term.nativePaletteColor(2^(i-1)))
+    end
     settings.set("obsi-spamton-skipcutscene", true)
     function obsi.update(dt)
         if not gameOver and not hasWon then
@@ -180,7 +183,7 @@ function game.load()
             for _, wall in ipairs(walls) do
                 wall.height = math.min(256, floor.y-center.y+2)
             end
-            if obsi.timer.getTime()-damageTime > 2.5 then
+            if obsi.timer.getTime()-damageTime > 1.2 then
                 for _, enemy in ipairs(enemies) do
                     -- AABB collision test
                     local overlapX = player.x < enemy.x + enemy.width-2 and
@@ -190,6 +193,9 @@ function game.load()
                     if overlapX and overlapY then
                         health = math.max(0, health-1)
                         damageTime = obsi.timer.getTime()
+                        obsi.audio.playNote(2, "bass", 24, 2, 0)
+                        obsi.audio.playNote(2, "bass", 19, 2, 0.05)
+                        obsi.audio.playNote(2, "bass", 16, 2, 0.1)
                     end
                 end
             end
@@ -197,10 +203,10 @@ function game.load()
 
         for i, carPart in ipairs(carParts) do
             -- AABB collision test
-            local overlapX = player.x < carPart.x + carPart.width-2 and
-                            player.x + player.width > carPart.x+2
-            local overlapY = player.y + player.height >= carPart.y+2 and
-                            player.y + player.height <= carPart.y + carPart.height-2
+            local overlapX = player.x < carPart.x + carPart.width-1 and
+                            player.x + player.width > carPart.x+1
+            local overlapY = player.y + player.height >= carPart.y+1 and
+                            player.y + player.height <= carPart.y + carPart.height-1
             if overlapX and overlapY then
                 table.remove(carParts, i)
                 carPartsCount = carPartsCount + 1
@@ -251,6 +257,12 @@ function game.load()
             obsi.graphics.setRenderer("neat")
         elseif (w/51 <= 2 or h/19 < 2) and obsi.graphics.getRenderer() ~= "pixelbox" then
             obsi.graphics.setRenderer("pixelbox")
+        end
+        if not gameOver and damageTime ~= 0 and obsi.timer.getTime() - damageTime < 1.2 then
+            local t = (math.cos((obsi.timer.getTime() - damageTime)*math.pi*2)+2)/4
+            obsi.graphics.setPaletteColor(colors.blue, 51/255*t, 102/255*t, 204/255*t)
+        else
+            obsi.graphics.setPaletteColor(colors.blue, 51/255, 102/255, 204/255)
         end
         center.x = (98+4-pw)/2
         obsi.graphics.setOrigin(center.x, 0)

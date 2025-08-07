@@ -88,6 +88,7 @@ local actions = {
     {type = "fadeOut", waitForCompletion = true},
     {type = "move", actor = "camera", dx = -52, dy = -32, duration = 0.001, waitForCompletion = false},
     {type = "stopMusic"},
+    {type = "wait", duration = 0.2, waitForCompletion = true},
     {type = "function", func = function() local game = require("platformer"); game.load(); game.reset() end}
 }
 
