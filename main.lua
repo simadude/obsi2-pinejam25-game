@@ -15,15 +15,17 @@ local menuOptions = {
 local settingsOptions = {
     {name = "Music Volume", type = "number", step = 5, min = 0, value = 100, max = 150},
     {name = "SFX Volume", type = "number", step = 5, min = 0, value = 100, max = 150},
+    {name = "Skip Cutscene", type = "choice", choices = {"true", "false"}, value = 2},
     {},
     {name = "EXIT", type = "function", value = function() gameState = "menu" end},
     selected = 1
 }
-settingsOptions[3] = {name = "APPLY", type = "function", value = function()
+settingsOptions[4] = {name = "APPLY", type = "function", value = function()
     obsi.audio.setVolume(1, settingsOptions[1].value/100)
     obsi.audio.setVolume(2, settingsOptions[2].value/100)
     settings.set("obsi-spamton-music", settingsOptions[1].value/100)
     settings.set("obsi-spamton-sfx", settingsOptions[2].value/100)
+    settings.set("obsi-spamton-skipcutscene", settingsOptions[3].choices[settingsOptions[3].value]=="true")
 end}
 
 function obsi.load()
@@ -95,10 +97,18 @@ function obsi.onKeyPress(k)
     if gameState == "menu" then
         if k == keys.enter or k == keys.z then
             if menuOptions.selected == 1 then
-                driver.setQueue({
-                    {type = "fadeOut", waitForCompletion = true} --[[@as game.Cutscene.FadeOut]],
-                    {type = "function", func = function() gameState = "cutscene"; obsi.audio.stop(1); driver.setQueue(require("scene1")); end}
-                })
+                if not settings.get("obsi-spamton-skipcutscene", false) then
+                    driver.setQueue({
+                        {type = "fadeOut", waitForCompletion = true} --[[@as game.Cutscene.FadeOut]],
+                        {type = "function", func = function() gameState = "cutscene"; obsi.audio.stop(1); driver.setQueue(require("scene2")); end}
+                    })
+                else
+                    driver.setQueue({
+                        {type = "fadeOut", waitForCompletion = true} --[[@as game.Cutscene.FadeOut]],
+                        {type = "wait", duration = 0.2, waitForCompletion = true},
+                        {type = "function", func = function() obsi.audio.stop(1); local game = require("platformer"); game.reset(); game.load() end}
+                    })
+                end
             elseif menuOptions.selected == 2 then
                 gameState = "settings"
                 -- obsi.quit()
