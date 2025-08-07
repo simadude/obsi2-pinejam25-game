@@ -101,7 +101,7 @@ local cutsceneDriver = {}
 local objects = {
     {
         name = "camera",
-        currentAnimation = "camera",
+        currentAnimation = "",
         currentFrame = 1,
         oldx = 0,
         oldy = 0,
