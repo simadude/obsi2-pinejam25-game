@@ -339,9 +339,9 @@ function game.load()
         if gameOver then
             game.reset()
         end
-        if k == keys.b then
-            carPartsCount = carPartsCount + 1
-        end
+        -- if k == keys.b then
+        --     carPartsCount = carPartsCount + 1
+        -- end
         if hasWon and obsi.timer.getTime()-winTime > 6 then
             obsi.audio.stop(1)
             require("end")()
