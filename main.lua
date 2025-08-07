@@ -100,7 +100,7 @@ function obsi.onKeyPress(k)
                 if not settings.get("obsi-spamton-skipcutscene", false) then
                     driver.setQueue({
                         {type = "fadeOut", waitForCompletion = true} --[[@as game.Cutscene.FadeOut]],
-                        {type = "function", func = function() gameState = "cutscene"; obsi.audio.stop(1); driver.setQueue(require("scene2")); end}
+                        {type = "function", func = function() gameState = "cutscene"; obsi.audio.stop(1); driver.setQueue(require("scene1")); end}
                     })
                 else
                     driver.setQueue({
